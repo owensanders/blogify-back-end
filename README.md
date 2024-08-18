@@ -4,7 +4,7 @@
 <ol>
   <li>Set up the database connection by copying the example environment file:</li>
   <code>cp .env.example .env</code>
-  <li>Edit the newly created <code>.env</code> file to configure your database and other environment settings. I have used SQLite if you want to use this tweak the .env to point to your project. Use PWD in the terminal to find the path.</li>
+  <li>Edit the newly created <code>.env</code> file to configure your database and other environment settings. I have used SQLite if you want to use this tweak the .env to point to your project. Use pwd in the terminal to find the path.</li>
   <li>Run the migrations and seed the database:</li>
   <code>php artisan migrate --seed</code>
   <li>Start the Laravel development server:</li>
