@@ -2,94 +2,58 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
+use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class PostController extends Controller
 {
-    private function getCacheKey(int $id): string
+    private $postService;
+
+    public function __construct(PostService $postService)
     {
-        return "posts_author_$id";
+        $this->postService = $postService;
     }
 
     public function feed(): JsonResponse
     {
-        $posts = Post::where('author_id', '!=', auth()->user()->id)->get();
+        $posts = $this->postService->getFeedPosts(auth()->user()->id)->toArray();
 
-        return response()->json(['posts' => $posts]);
+        return response()->json(['posts' => array_values($posts)]);
     }
 
     public function index(int $id): JsonResponse
     {
-        $cacheKey = $this->getCacheKey($id);
-
-        $posts = Cache::remember($cacheKey, 60 * 60, function () use ($id) {
-            return Post::where('author_id', $id)->get();
-        });
+        $posts = $this->postService->getPostsByAuthor($id);
 
         return response()->json(['posts' => $posts]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StorePostRequest $request): JsonResponse
     {
-        $request->validate([
-            'title' => 'required|string|max:50',
-            'body' => 'required|max:500',
-        ]);
-
-        Post::create([
-            'title' => $request->title,
-            'body' => $request->body,
-            'author_id' => auth()->id(),
-        ]);
-
-        $cacheKey = $this->getCacheKey(auth()->id());
-
-        Cache::forget($cacheKey);
+        $this->postService->createPost($request->validated(), auth()->id());
 
         return response()->json(['message' => 'Post created successfully.']);
     }
 
     public function show(int $id): JsonResponse
     {
-        $post = Post::findOrFail($id);
+        $post = $this->postService->getPostById($id);
 
         return response()->json(['post' => $post]);
     }
 
-    public function update(Request $request): JsonResponse
+    public function update(UpdatePostRequest $request): JsonResponse
     {
-        $request->validate([
-            'id' => 'required|int',
-            'title' => 'required|string|max:255',
-            'body' => 'required',
-        ]);
-
-        $post = Post::findOrFail($request->id);
-
-        $post->update([
-            'title' => $request->title,
-            'body' => $request->body,
-        ]);
-
-        $cacheKey = $this->getCacheKey($post->author_id);
-
-        Cache::forget($cacheKey);
+        $this->postService->updatePost($request->validated());
 
         return response()->json(['message' => 'Post updated successfully.']);
     }
 
     public function destroy(int $id): JsonResponse
     {
-        $post = Post::findOrFail($id);
-        $authorId = $post->author_id;
-        $post->delete();
-
-        $cacheKey = $this->getCacheKey($authorId);
-
-        Cache::forget($cacheKey);
+        $this->postService->deletePost($id);
 
         return response()->json(['message' => 'Post deleted successfully.']);
     }
