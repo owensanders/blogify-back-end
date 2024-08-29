@@ -14,6 +14,13 @@ class PostController extends Controller
         return "posts_author_$id";
     }
 
+    public function feed(): JsonResponse
+    {
+        $posts = Post::where('author_id', '!=', auth()->user()->id)->get();
+
+        return response()->json(['posts' => $posts]);
+    }
+
     public function index(int $id): JsonResponse
     {
         $cacheKey = $this->getCacheKey($id);
