@@ -45,6 +45,13 @@ class PostController extends Controller
         return response()->json(['message' => 'Post created successfully.']);
     }
 
+    public function show(int $id): JsonResponse
+    {
+        $post = Post::findOrFail($id);
+
+        return response()->json(['post' => $post]);
+    }
+
     public function update(Request $request): JsonResponse
     {
         $request->validate([
