@@ -8,6 +8,9 @@
   <code>cp .env.example .env</code>
       <li>Install all dependencies:</li>
     <code>composer install</code>
+    <p>If you don't have composer on you computer then you can:</p>
+    <code>cd /path/to/the/laravel/project</code>
+    <code>docker run --rm -v $(pwd):/app -w /app composer install</code>
       <li>Spin up docker containers:</li>
     <code>./vendor/bin/sail up</code>
     <li>Run the migrations and seed the database:</li>
