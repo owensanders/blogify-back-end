@@ -57,4 +57,11 @@ class PostController extends Controller
 
         return response()->json(['message' => 'Post deleted successfully.']);
     }
+
+    public function like(int $id): JsonResponse
+    {
+        $this->postService->likePost($id);
+
+        return response()->json(['message' => 'Post liked successfully.']);
+    }
 }

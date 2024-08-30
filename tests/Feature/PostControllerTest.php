@@ -41,7 +41,7 @@ class PostControllerTest extends TestCase
             ->once()
             ->andReturn(collect([$post]));
 
-        $response = $this->actingAs($user)->getJson("/posts/user/{$user->id}");
+        $response = $this->actingAs($user)->getJson("/posts/user/$user->id");
 
         $response->assertStatus(200)
             ->assertJsonFragment(['id' => $post->id]);
@@ -71,7 +71,7 @@ class PostControllerTest extends TestCase
         $user = User::factory()->create();
         $post = Post::factory()->create(['author_id' => $user->id]);
 
-        $response = $this->actingAs($user)->getJson("/posts/{$post->id}");
+        $response = $this->actingAs($user)->getJson("/posts/$post->id");
 
         $response->assertStatus(200)
             ->assertJsonFragment(['id' => $post->id]);
@@ -103,13 +103,30 @@ class PostControllerTest extends TestCase
         $user = User::factory()->create();
         $post = Post::factory()->create(['author_id' => $user->id]);
 
-        $response = $this->actingAs($user)->deleteJson("/posts/{$post->id}");
+        $response = $this->actingAs($user)->deleteJson("/posts/$post->id");
 
         $response->assertStatus(200)
             ->assertJsonFragment(['message' => 'Post deleted successfully.']);
 
         $this->assertDatabaseMissing('posts', [
             'id' => $post->id,
+        ]);
+    }
+
+    public function test_user_can_like_a_post(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $post = Post::factory()->create(['author_id' => $otherUser->id]);
+
+        $response = $this->actingAs($user)->postJson("/posts/$post->id/like");
+
+        $response->assertStatus(200)
+            ->assertJsonFragment(['message' => 'Post liked successfully.']);
+
+        $this->assertDatabaseHas('likes', [
+            'user_id' => $user->id,
+            'post_id' => $post->id,
         ]);
     }
 }

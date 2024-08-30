@@ -45,4 +45,9 @@ class PostService
     {
         $this->postRepository->deletePost($id);
     }
+
+    public function likePost(int $id): void
+    {
+        $this->postRepository->likePost($id);
+    }
 }

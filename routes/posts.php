@@ -10,4 +10,5 @@ Route::middleware('auth')->prefix('posts')->group(function () {
     Route::get('/{id}', [PostController::class, 'show'])->name('posts.show');
     Route::put('/update', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::post('/{id}/like', [PostController::class, 'like'])->name('posts.like');
 });

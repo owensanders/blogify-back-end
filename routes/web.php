@@ -18,7 +18,7 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
-Route::post('/my-profile/update', [UserController::class, 'update']);
+Route::post('/my-profile/update', [UserController::class, 'update'])->middleware('auth')->name('my.profile.update');
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/posts.php';
