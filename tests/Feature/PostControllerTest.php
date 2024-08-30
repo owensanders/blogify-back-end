@@ -5,13 +5,12 @@ namespace Tests\Feature;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class PostControllerTest extends TestCase
 {
-    use RefreshDatabase, DatabaseTransactions;
+    use DatabaseTransactions;
 
     public function test_feed_returns_posts_except_authenticated_user(): void
     {
@@ -21,11 +20,16 @@ class PostControllerTest extends TestCase
         Post::factory()->create(['author_id' => $user->id]);
         $otherUserPost = Post::factory()->create(['author_id' => $otherUser->id]);
 
-        $response = $this->actingAs($user)->getJson('/posts/feed');
+        $response = $this->actingAs($user)->getJson('/posts');
 
         $response->assertStatus(200)
-            ->assertJsonCount(1, 'posts')
-            ->assertJsonFragment(['id' => $otherUserPost->id]);
+            ->assertJsonCount(1)
+            ->assertJsonFragment([
+                'id' => $otherUserPost->id,
+                'title' => $otherUserPost->title,
+                'body' => $otherUserPost->body,
+                'author_id' => $otherUserPost->author_id,
+            ]);
     }
 
     public function test_index_returns_cached_posts(): void
@@ -37,7 +41,7 @@ class PostControllerTest extends TestCase
             ->once()
             ->andReturn(collect([$post]));
 
-        $response = $this->actingAs($user)->getJson("/posts/{$user->id}");
+        $response = $this->actingAs($user)->getJson("/posts/user/{$user->id}");
 
         $response->assertStatus(200)
             ->assertJsonFragment(['id' => $post->id]);
@@ -47,12 +51,12 @@ class PostControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->postJson('/posts', [
+        $response = $this->actingAs($user)->postJson('/posts/create', [
             'title' => 'New Post',
             'body' => 'This is a new post body.',
         ]);
 
-        $response->assertStatus(201)
+        $response->assertStatus(200)
             ->assertJsonFragment(['message' => 'Post created successfully.']);
 
         $this->assertDatabaseHas('posts', [
@@ -78,7 +82,7 @@ class PostControllerTest extends TestCase
         $user = User::factory()->create();
         $post = Post::factory()->create(['author_id' => $user->id]);
 
-        $response = $this->actingAs($user)->putJson('/posts', [
+        $response = $this->actingAs($user)->putJson('/posts/update', [
             'id' => $post->id,
             'title' => 'Updated Title',
             'body' => 'Updated body content.',

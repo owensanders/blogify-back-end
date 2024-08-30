@@ -4,14 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase
 {
-    use RefreshDatabase, WithFaker, DatabaseTransactions;
+    use DatabaseTransactions, WithFaker;
 
     public function test_update_user_profile_successfully(): void
     {
@@ -25,7 +24,7 @@ class UserControllerTest extends TestCase
             'about' => 'This is updated information about the user.'
         ];
 
-        $response = $this->putJson('/my-profile/update', $data);
+        $response = $this->postJson('/my-profile/update', $data);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -60,7 +59,7 @@ class UserControllerTest extends TestCase
             'about' => str_repeat('a', 300), // About is too long
         ];
 
-        $response = $this->putJson('/my-profile/update', $data);
+        $response = $this->postJson('/my-profile/update', $data);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['name', 'email', 'about']);
