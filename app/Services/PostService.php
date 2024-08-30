@@ -50,4 +50,9 @@ class PostService
     {
         $this->postRepository->likePost($id);
     }
+
+    public function commentOnPost(array $data): void
+    {
+        $this->postRepository->comment($data['id'], $data);
+    }
 }

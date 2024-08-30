@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\CommentRepositoryInterface;
 use App\Interfaces\LikeRepositoryInterface;
 use App\Interfaces\PostRepositoryInterface;
 use App\Models\Post;
@@ -11,10 +12,12 @@ use Illuminate\Support\Facades\Cache;
 class PostRepository implements PostRepositoryInterface
 {
     private $likeRepository;
+    private $commentRepository;
 
-    public function __construct(LikeRepositoryInterface $likeRepository)
+    public function __construct(LikeRepositoryInterface $likeRepository, CommentRepositoryInterface $commentRepository)
     {
         $this->likeRepository = $likeRepository;
+        $this->commentRepository = $commentRepository;
     }
 
     private function getCacheKey(int $id): string
@@ -67,6 +70,14 @@ class PostRepository implements PostRepositoryInterface
     {
         $post = Post::findOrFail($id);
         $this->likeRepository->likePost($post->id);
+
+        Cache::forget($this->getCacheKey($post->author_id));
+    }
+
+    public function comment(int $id, array $data): void
+    {
+        $post = Post::findOrFail($id);
+        $this->commentRepository->comment($post->id, $data);
 
         Cache::forget($this->getCacheKey($post->author_id));
     }

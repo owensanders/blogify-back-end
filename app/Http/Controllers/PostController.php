@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentRequest;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Services\PostService;
@@ -63,5 +64,12 @@ class PostController extends Controller
         $this->postService->likePost($id);
 
         return response()->json(['message' => 'Post liked successfully.']);
+    }
+
+    public function comment(CommentRequest $request): JsonResponse
+    {
+        $this->postService->commentOnPost($request->validated());
+
+        return response()->json(['message' => 'Post commented successfully.']);
     }
 }

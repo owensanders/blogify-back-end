@@ -129,4 +129,25 @@ class PostControllerTest extends TestCase
             'post_id' => $post->id,
         ]);
     }
+
+    public function test_user_can_comment_on_a_post(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $post = Post::factory()->create(['author_id' => $otherUser->id]);
+
+        $response = $this->actingAs($user)->postJson("/posts/comment", [
+            'id' => $post->id,
+            'comment' => 'This is a comment.',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonFragment(['message' => 'Post commented successfully.']);
+
+        $this->assertDatabaseHas('comments', [
+            'user_id' => $user->id,
+            'post_id' => $post->id,
+            'comment' => 'This is a comment.',
+        ]);
+    }
 }
