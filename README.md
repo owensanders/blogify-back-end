@@ -1,5 +1,5 @@
 <h1>Blogify Back End</h1>
-<p>This is the back-end of my Blogify project, it uses Laravel as a REST API. <b>It is still a work in progress...</b></p>
+<p>This is the back-end of my Blogify project, it uses Laravel as a REST API and some aspects of clean code architecture.</p>
 <h2>Prerequisite</h2>
 <p>You will need to have Docker/Docker Desktop installed or Composer and PHP to run this API.</p>
 <p>To start the project, follow these steps:</p>
