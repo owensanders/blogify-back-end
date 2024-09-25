@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\DataTransferObjects\PostDto;
+use App\DtoFactories\PostDtoFactory;
 use App\Interfaces\CommentRepositoryInterface;
 use App\Interfaces\LikeRepositoryInterface;
 use App\Interfaces\PostRepositoryInterface;
@@ -13,11 +15,16 @@ class PostRepository implements PostRepositoryInterface
 {
     private $likeRepository;
     private $commentRepository;
+    private $model;
 
-    public function __construct(LikeRepositoryInterface $likeRepository, CommentRepositoryInterface $commentRepository)
-    {
+    public function __construct(
+        LikeRepositoryInterface $likeRepository,
+        CommentRepositoryInterface $commentRepository,
+        Post $model
+    ) {
         $this->likeRepository = $likeRepository;
         $this->commentRepository = $commentRepository;
+        $this->model = $model;
     }
 
     private function getCacheKey(int $id): string
@@ -27,48 +34,71 @@ class PostRepository implements PostRepositoryInterface
 
     public function getAllPosts(): Collection
     {
-        return Post::with(['likes', 'comments'])->get();
-    }
+        $posts = $this->model::with(['likes', 'comments'])->get();
 
-    public function getPostsByAuthor(int $authorId): Collection
-    {
-        $cacheKey = $this->getCacheKey($authorId);
-
-        return Cache::remember($cacheKey, 60 * 60, function () use ($authorId) {
-            return Post::where('author_id', $authorId)->with(['likes', 'comments'])->get();
+        return $posts->map(function (Post $post) {
+            return PostDtoFactory::fromModel($post);
         });
     }
 
-    public function getPostById(int $id): Post
+    public function getPostsByAuthor(int $id): Collection
     {
-        return Post::findOrFail($id);
+        $cacheKey = $this->getCacheKey($id);
+
+        $posts = Cache::remember($cacheKey, 60 * 60, function () use ($id) {
+            return $this->model::where('author_id', $id)
+                ->with(['likes', 'comments'])
+                ->get();
+        });
+
+        return $posts->map(function (Post $post) {
+            return PostDtoFactory::fromModel($post);
+        });
     }
 
-    public function createPost(array $data): Post
+    public function getPostById(int $id): ?PostDto
     {
-        $post = Post::create($data);
-        Cache::forget($this->getCacheKey($data['author_id']));
-        return $post;
+        $post = $this->model::find($id);
+        return $post ? PostDtoFactory::fromModel($post) : null;
     }
 
-    public function updatePost(int $id, array $data): Post
+    public function createPost(PostDto $dto): PostDto
     {
-        $post = Post::findOrFail($id);
-        $post->update($data);
-        Cache::forget($this->getCacheKey($post->author_id));
-        return $post;
+        $post = $this->model::create([
+            'title' => $dto->title,
+            'body' => $dto->body,
+            'author_id' => $dto->authorId,
+        ]);
+
+        Cache::forget($this->getCacheKey($dto->authorId));
+
+        return PostDtoFactory::fromModel($post);
+    }
+
+    public function updatePost(PostDto $dto): PostDto
+    {
+        $post = $this->model::findOrFail($dto->id);
+        $post->update([
+            'title' => $dto->title,
+            'body' => $dto->body
+        ]);
+
+        Cache::forget($this->getCacheKey($dto->authorId));
+
+        return PostDtoFactory::fromModel($post);
     }
 
     public function deletePost(int $id): void
     {
-        $post = Post::findOrFail($id);
+        $post = $this->model::findOrFail($id);
         $post->delete();
+
         Cache::forget($this->getCacheKey($post->author_id));
     }
 
     public function likePost(int $id): void
     {
-        $post = Post::findOrFail($id);
+        $post = $this->model::findOrFail($id);
         $this->likeRepository->likePost($post->id);
 
         Cache::forget($this->getCacheKey($post->author_id));
@@ -76,7 +106,7 @@ class PostRepository implements PostRepositoryInterface
 
     public function comment(int $id, array $data): void
     {
-        $post = Post::findOrFail($id);
+        $post = $this->model::findOrFail($id);
         $this->commentRepository->comment($post->id, $data);
 
         Cache::forget($this->getCacheKey($post->author_id));
