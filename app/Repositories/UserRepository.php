@@ -2,7 +2,8 @@
 
 namespace App\Repositories;
 
-use App\DTO\UserDto;
+use App\DataTransferObjects\UserDto;
+use App\DtoFactories\UserDtoFactory;
 use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 
@@ -14,9 +15,11 @@ class UserRepository implements UserRepositoryInterface
     {
         $this->model = $model;
     }
-    public function findUserById(int $id): ?User
+    public function findUserById(int $id): ?UserDto
     {
-        return $this->model::find($id);
+        $user = $this->model::find($id);
+
+        return $user ? UserDtoFactory::fromModel($user) : null;
     }
 
     public function updateUser(UserDto $userDto): bool

@@ -2,25 +2,25 @@
 
 namespace App\Presenters;
 
-use App\Models\Post;
+use App\DataTransferObjects\PostDto;
 use Illuminate\Support\Collection;
 
 class DashboardPresenter
 {
-    public function presentUserPosts(Collection $posts, ?Post $post): array
+    public function presentUserPosts(Collection $posts, ?PostDto $mostRecentPost): array
     {
-        $totalLikes = $posts->sum(function ($post) {
-            return $post->likes->count();
+        $totalLikes = $posts->sum(function (PostDto $post) {
+            return $post->totalLikes;
         });
 
-        $totalComments = $posts->sum(function ($post) {
-            return $post->comments->count();
+        $totalComments = $posts->sum(function (PostDto $post) {
+            return $post->totalComments;
         });
 
-        $postWithMostLikes = $posts->filter(function ($post) {
-            return $post->likes->count() > 0;
-        })->sortByDesc(function ($post) {
-            return $post->likes->count();
+        $postWithMostLikes = $posts->filter(function (PostDto $post) {
+            return $post->totalLikes > 0;
+        })->sortByDesc(function (PostDto $post) {
+            return $post->totalLikes;
         })->first();
 
         return [
@@ -28,7 +28,8 @@ class DashboardPresenter
             'total_likes' => $totalLikes,
             'total_comments' => $totalComments,
             'post_with_most_likes' => $postWithMostLikes,
-            'most_recent_post' => $post,
+            'most_recent_post' => $mostRecentPost,
         ];
     }
 }
+

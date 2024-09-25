@@ -2,11 +2,10 @@
 
 namespace App\Interfaces;
 
-use App\DTO\UserDto;
-use App\Models\User;
+use App\DataTransferObjects\UserDto;
 
 interface UserRepositoryInterface
 {
-    public function findUserById(int $id): ?User;
+    public function findUserById(int $id): ?UserDto;
     public function updateUser(UserDto $userDto): bool;
 }

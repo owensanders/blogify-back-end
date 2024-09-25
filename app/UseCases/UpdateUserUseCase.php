@@ -2,7 +2,7 @@
 
 namespace App\UseCases;
 
-use App\DTO\UserDto;
+use App\DataTransferObjects\UserDto;
 use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 
@@ -15,7 +15,7 @@ class UpdateUserUseCase
         $this->userRepository = $userRepository;
     }
 
-    public function handle(UserDto $userDto): User
+    public function handle(UserDto $userDto): ?UserDto
     {
         $this->userRepository->updateUser($userDto);
 

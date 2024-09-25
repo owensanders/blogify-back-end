@@ -10,22 +10,20 @@ use Illuminate\Http\JsonResponse;
 class UserController extends Controller
 {
     private $updateUserUseCase;
-    private $userDtoFactory;
 
-    public function __construct(UpdateUserUseCase $updateUserUseCase, UserDtoFactory $userDtoFactory)
+    public function __construct(UpdateUserUseCase $updateUserUseCase)
     {
         $this->updateUserUseCase = $updateUserUseCase;
-        $this->userDtoFactory = $userDtoFactory;
     }
 
     public function update(UpdateUserRequest $request): JsonResponse
     {
-        $dto = $this->userDtoFactory->fromRequest($request);
+        $dto = UserDtoFactory::fromRequest($request);
         $user = $this->updateUserUseCase->handle($dto);
 
         return response()->json([
             'message' => 'Profile updated successfully',
-            'user' => $user,
+            'user' => $user->toArray(),
         ]);
     }
 }

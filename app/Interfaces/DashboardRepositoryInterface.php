@@ -2,11 +2,11 @@
 
 namespace App\Interfaces;
 
-use App\Models\Post;
 use Illuminate\Support\Collection;
+use App\DataTransferObjects\PostDto;
 
 interface DashboardRepositoryInterface
 {
     public function getUserPosts(): Collection;
-    public function getUsersMostRecentPost(): ?Post;
+    public function getUsersMostRecentPost(): ?PostDto;
 }
