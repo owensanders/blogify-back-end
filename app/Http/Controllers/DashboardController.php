@@ -2,21 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\DashboardService;
+use App\Presenters\DashboardPresenter;
+use App\UseCases\GetDashboardDataUseCase;
 use Illuminate\Http\JsonResponse;
 
 class DashboardController extends Controller
 {
-    private $dashboardService;
+    private $getDashboardDataUseCase;
+    private $dashboardPresenter;
 
-    public function __construct(DashboardService $dashboardService)
-    {
-        $this->dashboardService = $dashboardService;
+    public function __construct(
+        GetDashboardDataUseCase $getDashboardDataUseCase,
+        DashboardPresenter $dashboardPresenter
+    ) {
+        $this->getDashboardDataUseCase = $getDashboardDataUseCase;
+        $this->dashboardPresenter = $dashboardPresenter;
     }
 
     public function index(): JsonResponse
     {
-        $data = $this->dashboardService->fetchDashboardData();
+        $posts = $this->getDashboardDataUseCase->handle();
+        $data = $this->dashboardPresenter->presentUserPosts($posts['posts'], $posts['mostRecentPost']);
 
         return response()->json($data);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Presenters\DashboardPresenter;
+use App\Presenters\DashboardPresenterInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

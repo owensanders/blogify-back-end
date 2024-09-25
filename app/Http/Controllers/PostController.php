@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CommentRequest;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
-use App\Services\PostService;
+use App\UseCases\PostService;
 use Illuminate\Http\JsonResponse;
 
 class PostController extends Controller

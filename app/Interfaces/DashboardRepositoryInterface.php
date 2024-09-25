@@ -2,9 +2,11 @@
 
 namespace App\Interfaces;
 
-use App\Models\User;
+use App\Models\Post;
+use Illuminate\Support\Collection;
 
 interface DashboardRepositoryInterface
 {
-    public function get(): array;
+    public function getUserPosts(): Collection;
+    public function getUsersMostRecentPost(): ?Post;
 }

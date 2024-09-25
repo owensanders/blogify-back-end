@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Services;
+namespace App\UseCases;
+
 use App\Interfaces\PostRepositoryInterface;
 use App\Models\Post;
 use Illuminate\Support\Collection;

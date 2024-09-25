@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\UseCases;
 
+use App\DTO\UserDto;
 use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 
-class UserService
+class UpdateUserUseCase
 {
     protected $userRepository;
 
@@ -14,10 +15,10 @@ class UserService
         $this->userRepository = $userRepository;
     }
 
-    public function updateUser(int $userId, array $data): User
+    public function handle(UserDto $userDto): User
     {
-        $this->userRepository->updateUser($userId, $data);
+        $this->userRepository->updateUser($userDto);
 
-        return $this->userRepository->findUserById($userId);
+        return $this->userRepository->findUserById($userDto->id);
     }
 }

@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\DtoFactories\UserDtoFactory;
 use App\Http\Requests\UpdateUserRequest;
-use App\Services\UserService;
+use App\UseCases\UpdateUserUseCase;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
-    private $userService;
+    private $updateUserUseCase;
+    private $userDtoFactory;
 
-    public function __construct(UserService $userService)
+    public function __construct(UpdateUserUseCase $updateUserUseCase, UserDtoFactory $userDtoFactory)
     {
-        $this->userService = $userService;
+        $this->updateUserUseCase = $updateUserUseCase;
+        $this->userDtoFactory = $userDtoFactory;
     }
 
     public function update(UpdateUserRequest $request): JsonResponse
     {
-        $user = $this->userService->updateUser(auth()->user()->id, $request->validated());
+        $dto = $this->userDtoFactory->fromRequest($request);
+        $user = $this->updateUserUseCase->handle($dto);
 
         return response()->json([
             'message' => 'Profile updated successfully',
