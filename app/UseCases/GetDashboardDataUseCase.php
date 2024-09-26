@@ -2,21 +2,21 @@
 
 namespace App\UseCases;
 
-use App\Interfaces\DashboardRepositoryInterface;
+use App\Interfaces\PostRepositoryInterface;
 
 class GetDashboardDataUseCase
 {
-    private $dashboardRepository;
+    private $postRepository;
 
-    public function __construct(DashboardRepositoryInterface $dashboardRepository)
+    public function __construct(PostRepositoryInterface $postRepository)
     {
-        $this->dashboardRepository = $dashboardRepository;
+        $this->postRepository = $postRepository;
     }
 
     public function handle(): array
     {
-        $userPosts = $this->dashboardRepository->getUserPosts();
-        $userMostRecentPost = $this->dashboardRepository->getUsersMostRecentPost();
+        $userPosts = $this->postRepository->getUserPosts();
+        $userMostRecentPost = $this->postRepository->getUsersMostRecentPost();
 
         return ['posts' => $userPosts, 'mostRecentPost' => $userMostRecentPost];
     }

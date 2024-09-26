@@ -15,4 +15,6 @@ interface PostRepositoryInterface
     public function deletePost(int $id): void;
     public function likePost(int $id): void;
     public function comment(int $id, array $data): void;
+    public function getUserPosts(): Collection;
+    public function getUsersMostRecentPost(): ?PostDto;
 }
