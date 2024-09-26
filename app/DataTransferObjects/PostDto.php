@@ -1,6 +1,7 @@
 <?php
 
 namespace App\DataTransferObjects;
+use Illuminate\Support\Collection;
 
 class PostDto
 {
@@ -8,22 +9,25 @@ class PostDto
     public $title;
     public $body;
     public $authorId;
-    public $totalLikes;
-    public $totalComments;
+    public $comment;
+    public $likes;
+    public $comments;
 
     public function __construct(
         ?int $id = null,
-        string $title,
-        string $body,
+        ?string $title,
+        string $body = null,
         int $authorId,
-        ?int $totalLikes = null,
-        ?int $totalComments = null
+        ?string $comment = null,
+        ?Collection $likes = null,
+        ?Collection $comments = null
     ) {
         $this->id = $id;
         $this->title = $title;
         $this->body = $body;
         $this->authorId = $authorId;
-        $this->totalLikes = $totalLikes;
-        $this->totalComments = $totalComments;
+        $this->comment = $comment;
+        $this->likes = $likes;
+        $this->comments = $comments;
     }
 }

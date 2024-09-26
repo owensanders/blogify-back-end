@@ -15,18 +15,22 @@ class PostDtoFactory
             $post->title,
             $post->body,
             $post->author_id,
-            $post->likes->count(),
-            $post->comments->count()
+            null,
+            $post->likes,
+            $post->comments
         );
     }
 
     public static function fromRequest(Request $request): PostDto
     {
         return new PostDto(
-            id: $request->input('id'),
-            title: $request->input('title'),
-            body: $request->input('body'),
-            authorId: auth()->user()->id,
+            $request->input('id'),
+            $request->input('title'),
+            $request->input('body'),
+            auth()->user()->id,
+            $request->input('comment'),
+            null,
+            null
         );
     }
 }

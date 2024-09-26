@@ -6,37 +6,45 @@ use App\DtoFactories\PostDtoFactory;
 use App\Http\Requests\CommentRequest;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\UseCases\CommentOnPostUseCase;
 use App\UseCases\CreatePostUseCase;
+use App\UseCases\DeletePostUseCase;
 use App\UseCases\GetFeedPostsUseCase;
 use App\UseCases\GetPostForUpdate;
 use App\UseCases\GetPostsByAuthorUseCase;
-use App\UseCases\PostService;
+use App\UseCases\LikePostUseCase;
 use App\UseCases\UpdatePostUseCase;
 use Illuminate\Http\JsonResponse;
 
 class PostController extends Controller
 {
-    private $postService;
     private $getFeedPostsUseCase;
     private $getPostsByAuthorUseCase;
     private $createPostUseCase;
     private $getPostForUpdateUseCase;
     private $updatePostUseCase;
+    private $deletePostUseCase;
+    private $likePostUseCase;
+    private $commentOnPostUseCase;
 
     public function __construct(
-        PostService $postService,
         GetFeedPostsUseCase $getFeedPostsUseCase,
         GetPostsByAuthorUseCase $getPostsByAuthorUseCase,
         CreatePostUseCase $createPostUseCase,
         GetPostForUpdate $getPostForUpdateUseCase,
-        UpdatePostUseCase $updatePostUseCase
+        UpdatePostUseCase $updatePostUseCase,
+        DeletePostUseCase $deletePostUseCase,
+        LikePostUseCase $likePostUseCase,
+        CommentOnPostUseCase $commentOnPostUseCase
     ) {
-        $this->postService = $postService;
         $this->getFeedPostsUseCase = $getFeedPostsUseCase;
         $this->getPostsByAuthorUseCase = $getPostsByAuthorUseCase;
         $this->createPostUseCase = $createPostUseCase;
         $this->getPostForUpdateUseCase = $getPostForUpdateUseCase;
         $this->updatePostUseCase = $updatePostUseCase;
+        $this->deletePostUseCase = $deletePostUseCase;
+        $this->likePostUseCase = $likePostUseCase;
+        $this->commentOnPostUseCase = $commentOnPostUseCase;
     }
 
     public function feed(): JsonResponse
@@ -79,21 +87,22 @@ class PostController extends Controller
 
     public function destroy(int $id): JsonResponse
     {
-        $this->postService->deletePost($id);
+        $this->deletePostUseCase->handle($id);
 
         return response()->json(['message' => 'Post deleted successfully.']);
     }
 
     public function like(int $id): JsonResponse
     {
-        $this->postService->likePost($id);
+        $this->likePostUseCase->handle($id);
 
         return response()->json(['message' => 'Post liked successfully.']);
     }
 
     public function comment(CommentRequest $request): JsonResponse
     {
-        $this->postService->commentOnPost($request->validated());
+        $dto = PostDtoFactory::fromRequest($request);
+        $this->commentOnPostUseCase->handle($dto);
 
         return response()->json(['message' => 'Post commented successfully.']);
     }

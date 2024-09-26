@@ -124,10 +124,10 @@ class PostRepository implements PostRepositoryInterface
         Cache::forget($this->getCacheKey($post->author_id));
     }
 
-    public function comment(int $id, array $data): void
+    public function comment(PostDto $postDto): void
     {
-        $post = $this->model::findOrFail($id);
-        $this->commentRepository->comment($post->id, $data);
+        $post = $this->model::findOrFail($postDto->id);
+        $this->commentRepository->comment($post->id, $postDto->comment);
 
         Cache::forget($this->getCacheKey($post->author_id));
     }

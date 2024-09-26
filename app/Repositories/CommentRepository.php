@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentRepository implements CommentRepositoryInterface
 {
-    public function comment(int $postId, array $data): void
+    public function comment(int $postId, string $comment): void
     {
         Comment::create([
-            'user_id' => Auth::id(),
+            'user_id' => auth()->user()->id,
             'post_id' => $postId,
-            'comment' => $data['comment'],
+            'comment' => $comment,
         ]);
     }
 }

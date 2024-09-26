@@ -4,5 +4,5 @@ namespace App\Interfaces;
 
 interface CommentRepositoryInterface
 {
-    public function comment(int $postId, array $data): void;
+    public function comment(int $postId, string $comment): void;
 }
