@@ -7,14 +7,11 @@ use App\DtoFactories\UserDtoFactory;
 use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 
-class UserRepository implements UserRepositoryInterface
+readonly class UserRepository implements UserRepositoryInterface
 {
-    private $model;
+    public function __construct(private User $model)
+    {}
 
-    public function __construct(User $model)
-    {
-        $this->model = $model;
-    }
     public function findUserById(int $id): ?UserDto
     {
         $user = $this->model::find($id);

@@ -4,18 +4,13 @@ namespace App\DataTransferObjects;
 
 class UserDto
 {
-    public $id;
-    public $name;
-    public $email;
-    public $about;
-
-    public function __construct(int $id, string $name, string $email, ?string $about)
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->email = $email;
-        $this->about = $about;
-    }
+    public function __construct(
+        public int $id,
+        public string $name,
+        public string $email,
+        public ?string $about
+    )
+    {}
 
     public function toArray(): array
     {

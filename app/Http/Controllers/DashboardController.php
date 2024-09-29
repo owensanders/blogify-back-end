@@ -8,16 +8,10 @@ use Illuminate\Http\JsonResponse;
 
 class DashboardController extends Controller
 {
-    private $getDashboardDataUseCase;
-    private $dashboardPresenter;
-
     public function __construct(
-        GetDashboardDataUseCase $getDashboardDataUseCase,
-        DashboardPresenter $dashboardPresenter
-    ) {
-        $this->getDashboardDataUseCase = $getDashboardDataUseCase;
-        $this->dashboardPresenter = $dashboardPresenter;
-    }
+        private readonly GetDashboardDataUseCase $getDashboardDataUseCase,
+        private readonly DashboardPresenter $dashboardPresenter
+    ) {}
 
     public function index(): JsonResponse
     {

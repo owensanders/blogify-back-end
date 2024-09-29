@@ -11,21 +11,13 @@ use App\Models\Post;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
-class PostRepository implements PostRepositoryInterface
+readonly class PostRepository implements PostRepositoryInterface
 {
-    private $likeRepository;
-    private $commentRepository;
-    private $model;
-
     public function __construct(
-        LikeRepositoryInterface $likeRepository,
-        CommentRepositoryInterface $commentRepository,
-        Post $model
-    ) {
-        $this->likeRepository = $likeRepository;
-        $this->commentRepository = $commentRepository;
-        $this->model = $model;
-    }
+        private LikeRepositoryInterface $likeRepository,
+        private CommentRepositoryInterface $commentRepository,
+        private Post $model
+    ) {}
 
     private function getCacheKey(int $id): string
     {

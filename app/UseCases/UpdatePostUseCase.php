@@ -4,16 +4,11 @@ namespace App\UseCases;
 
 use App\DataTransferObjects\PostDto;
 use App\Interfaces\PostRepositoryInterface;
-use Illuminate\Support\Collection;
 
-class UpdatePostUseCase
+readonly class UpdatePostUseCase
 {
-    private $postRepository;
-
-    public function __construct(PostRepositoryInterface $postRepository)
-    {
-        $this->postRepository = $postRepository;
-    }
+    public function __construct(private PostRepositoryInterface $postRepository)
+    {}
 
     public function handle(PostDto $dto): PostDto
     {

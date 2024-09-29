@@ -18,34 +18,16 @@ use Illuminate\Http\JsonResponse;
 
 class PostController extends Controller
 {
-    private $getFeedPostsUseCase;
-    private $getPostsByAuthorUseCase;
-    private $createPostUseCase;
-    private $getPostForUpdateUseCase;
-    private $updatePostUseCase;
-    private $deletePostUseCase;
-    private $likePostUseCase;
-    private $commentOnPostUseCase;
-
     public function __construct(
-        GetFeedPostsUseCase $getFeedPostsUseCase,
-        GetPostsByAuthorUseCase $getPostsByAuthorUseCase,
-        CreatePostUseCase $createPostUseCase,
-        GetPostForUpdate $getPostForUpdateUseCase,
-        UpdatePostUseCase $updatePostUseCase,
-        DeletePostUseCase $deletePostUseCase,
-        LikePostUseCase $likePostUseCase,
-        CommentOnPostUseCase $commentOnPostUseCase
-    ) {
-        $this->getFeedPostsUseCase = $getFeedPostsUseCase;
-        $this->getPostsByAuthorUseCase = $getPostsByAuthorUseCase;
-        $this->createPostUseCase = $createPostUseCase;
-        $this->getPostForUpdateUseCase = $getPostForUpdateUseCase;
-        $this->updatePostUseCase = $updatePostUseCase;
-        $this->deletePostUseCase = $deletePostUseCase;
-        $this->likePostUseCase = $likePostUseCase;
-        $this->commentOnPostUseCase = $commentOnPostUseCase;
-    }
+        private readonly GetFeedPostsUseCase $getFeedPostsUseCase,
+        private readonly GetPostsByAuthorUseCase $getPostsByAuthorUseCase,
+        private readonly CreatePostUseCase $createPostUseCase,
+        private readonly GetPostForUpdate $getPostForUpdateUseCase,
+        private readonly UpdatePostUseCase $updatePostUseCase,
+        private readonly DeletePostUseCase $deletePostUseCase,
+        private readonly LikePostUseCase $likePostUseCase,
+        private readonly CommentOnPostUseCase $commentOnPostUseCase
+    ) {}
 
     public function feed(): JsonResponse
     {

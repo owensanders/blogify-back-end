@@ -6,11 +6,14 @@ use App\Interfaces\LikeRepositoryInterface;
 use App\Models\Like;
 use Illuminate\Support\Facades\Auth;
 
-class LikeRepository implements LikeRepositoryInterface
+readonly class LikeRepository implements LikeRepositoryInterface
 {
+    public function __construct(private Like $model)
+    {}
+
     public function likePost(int $postId): void
     {
-        Like::create([
+        $this->model::create([
             'user_id' => Auth::id(),
             'post_id' => $postId,
         ]);

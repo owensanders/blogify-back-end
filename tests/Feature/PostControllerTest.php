@@ -28,7 +28,7 @@ class PostControllerTest extends TestCase
                 'id' => $otherUserPost->id,
                 'title' => $otherUserPost->title,
                 'body' => $otherUserPost->body,
-                'author_id' => $otherUserPost->author_id,
+                'authorId' => $otherUserPost->author_id,
             ]);
     }
 

@@ -22,6 +22,7 @@ class DashboardControllerTest extends TestCase
             'author_id' => $user->id,
             'created_at' => now()->subDays(2),
         ]);
+
         $post2 = Post::factory()->create(['author_id' => $user->id]);
 
         Like::factory()->count(3)->create(['post_id' => $post1->id]);
@@ -36,21 +37,12 @@ class DashboardControllerTest extends TestCase
             'total_posts',
             'total_likes',
             'total_comments',
-            'most_recent_post' => [
-                'id',
-                'title',
-                'body',
-                'author_id',
-                'created_at',
-                'updated_at',
-            ],
             'post_with_most_likes' => [
-                'id',
                 'title',
+                'authorId',
+                'id',
                 'body',
-                'author_id',
-                'created_at',
-                'updated_at',
+                'comment',
                 'likes' => [
                     '*' => [
                         'id',
@@ -63,14 +55,25 @@ class DashboardControllerTest extends TestCase
                 'comments' => [
                     '*' => [
                         'id',
-                        'comment',
+                        'user_id',
                         'post_id',
+                        'comment',
                         'created_at',
                         'updated_at',
                     ],
                 ],
             ],
+            'most_recent_post' => [
+                'title',
+                'authorId',
+                'id',
+                'body',
+                'comment',
+                'likes',
+                'comments',
+            ],
         ]);
+
 
         $data = $response->json();
 

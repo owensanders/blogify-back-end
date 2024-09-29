@@ -5,14 +5,10 @@ namespace App\UseCases;
 use App\DataTransferObjects\UserDto;
 use App\Interfaces\UserRepositoryInterface;
 
-class UpdateUserUseCase
+readonly class UpdateUserUseCase
 {
-    protected $userRepository;
-
-    public function __construct(UserRepositoryInterface $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
+    public function __construct(private UserRepositoryInterface $userRepository)
+    {}
 
     public function handle(UserDto $userDto): ?UserDto
     {

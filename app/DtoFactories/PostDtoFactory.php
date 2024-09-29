@@ -11,10 +11,10 @@ class PostDtoFactory
     public static function fromModel(Post $post): PostDto
     {
         return new PostDto(
-            $post->id,
             $post->title,
-            $post->body,
             $post->author_id,
+            $post->id,
+            $post->body,
             null,
             $post->likes,
             $post->comments
@@ -24,13 +24,14 @@ class PostDtoFactory
     public static function fromRequest(Request $request): PostDto
     {
         return new PostDto(
-            $request->input('id'),
             $request->input('title'),
-            $request->input('body'),
             auth()->user()->id,
+            $request->input('id'),
+            $request->input('body'),
             $request->input('comment'),
             null,
             null
         );
     }
 }
+
