@@ -1,5 +1,6 @@
 <h1>Blogify Back End</h1>
 <p>This is the back-end of my Blogify project, it uses Laravel as a REST API and some aspects of clean code architecture. e.g. Use cases, Repositories, Contracts (interfaces), Data Transfer Objects(DTO) and DTO Factories.</p>
+<p>Main thing i'm trying to showcase here is abstraction and seperation of concerns by splitting out the code into it's on class.</p>
 <h2>Prerequisite</h2>
 <p>You will need to have Docker/Docker Desktop installed or Composer and PHP to run this API.</p>
 <p>To start the project, follow these steps:</p>
@@ -19,7 +20,7 @@
     <code>./vendor/bin/sail up</code>
     <li>Run the migrations and seed the database:</li>
     <code>./vendor/bin/sail artisan migrate --seed</code>
-    <p>To run tests either run:</p>
+    <p>To run feature/unit tests either run:</p>
     <code>./vendor/bin/sail artisan test</code>
     <p>Or...</p>
     <code>php artisan test</code>
