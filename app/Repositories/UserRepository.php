@@ -27,4 +27,11 @@ readonly class UserRepository implements UserRepositoryInterface
             'about' => $userDto->about ?? null,
         ]);
     }
+
+    public function store(UserDto $userDto): User
+    {
+        //I would return a UserDto here, but I need the model
+        //to register the user.
+        return $this->model::create($userDto->toArray());
+    }
 }

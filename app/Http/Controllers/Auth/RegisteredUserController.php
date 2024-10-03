@@ -2,37 +2,33 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\DtoFactories\UserDtoFactory;
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\UseCases\CreateUserUseCase;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
 {
-    public function store(Request $request): JsonResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+    public function __construct(
+        private readonly CreateUserUseCase $createUserUseCase,
+        private readonly UserDtoFactory $userDtoFactory
+    )
+    {}
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    public function store(RegisterRequest $request): JsonResponse
+    {
+        $dto = $this->userDtoFactory::fromRequest($request);
+        $user = $this->createUserUseCase->handle($dto);
 
         event(new Registered($user));
 
         Auth::login($user);
 
         return response()->json([
-            'message' => 'User registered sucessfully.',
+            'message' => 'User registered successfully.',
             'user' => Auth::user(),
         ]);
     }
