@@ -1,4 +1,5 @@
 <h1>Blogify Back End</h1>
+<p>Blogify is a simple blog platform, where you can create, edit and delete posts. You can also view other users posts and like and comment on them.</p>
 <p>This is the back-end of my Blogify project, it uses Laravel as a REST API and some aspects of clean code architecture. e.g. Use cases, Repositories, Contracts (interfaces), Data Transfer Objects(DTO) and DTO Factories.</p>
 <p>Main thing i'm trying to showcase here is abstraction and seperation of concerns by splitting out the code.</p>
 <h2>Prerequisite</h2>
